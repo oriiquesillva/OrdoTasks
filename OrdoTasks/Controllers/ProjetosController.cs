@@ -69,5 +69,27 @@ namespace OrdoTasks.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProject(int id)
+        {
+            var verificaProjeto = await _projetoRepository.GetByIdAsync(id);
+
+            if (verificaProjeto == null)
+            {
+                return NotFound(new { message = "Ooops! Não foi possível encontrar o projeto" });
+            }
+
+            bool verificaTarefa = await _projetoRepository.HasTarefasAsync(id);
+
+            if (verificaTarefa)
+            {
+                return BadRequest(new { message = "Não é possível excluir um projeto que possui tarefas vinculadas" });
+            }
+
+            await _projetoRepository.DeleteAsync(id);
+
+            return NoContent();
+        }
     }
 }
