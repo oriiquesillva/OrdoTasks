@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using OrdoTasksApplication.Interfaces;
 using OrdoTasksDomain.Entities;
 
@@ -50,6 +51,23 @@ namespace OrdoTasks.Controllers
             projeto.Id = result;
 
             return Ok(projeto);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProject(int id, [FromBody] Projeto projeto)
+        {
+            var verificaProjeto = await _projetoRepository.GetByIdAsync(id);
+
+            if (verificaProjeto == null)
+            {
+                return NotFound(new { message = "Ooops! Não foi possível encontrar o projeto" });
+            }
+
+            projeto.Id = id;
+
+            await _projetoRepository.UpdateAsync(projeto);
+
+            return NoContent();
         }
     }
 }
