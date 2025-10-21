@@ -35,5 +35,21 @@ namespace OrdoTasks.Controllers
 
             return Ok(projeto);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProject([FromBody] Projeto projeto)
+        {
+            if (string.IsNullOrWhiteSpace(projeto.Nome))
+            {
+                return BadRequest(new { message = "Ooops! Para criar um projeto e obrigatório informar um nome" });
+            }
+
+            projeto.DataCriacao = DateTime.UtcNow;
+
+            var result = await _projetoRepository.CreateAsync(projeto);
+            projeto.Id = result;
+
+            return Ok(projeto);
+        }
     }
 }
