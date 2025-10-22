@@ -66,11 +66,11 @@ namespace OrdoTasks.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, [FromBody] Tarefa tarefa)
         {
-            var verificaTarefa = await _projetoRepository.GetByIdAsync(id);
+            var verificaTarefa = await _tarefaRepository.GetByIdAsync(id);
 
             if (verificaTarefa == null)
             {
-                return BadRequest(new { message = "Ooops! Não foi possível localizer essa tarefa." });
+                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa." });
             }
 
             tarefa.Id = id;
@@ -78,6 +78,33 @@ namespace OrdoTasks.Controllers
             await _tarefaRepository.UpdateAsync(tarefa);
 
             await _hub.Clients.All.SendAsync("Uma Tarefa foi atualizada", tarefa);
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateTaskStatus(int id, [FromBody] StatusTarefa novoStatus)
+        {
+            var verificaTarefa = await _tarefaRepository.GetByIdAsync(id);
+
+            if (verificaTarefa == null)
+            {
+                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa." });
+            }
+
+            if (novoStatus == StatusTarefa.EmAndamento && verificaTarefa.Status != StatusTarefa.Pendente)
+            {
+                return BadRequest(new {message = "Ooops! O status da tarefa só pode alterado para 'Em Andamento' se estiver com o status 'Pendente'." });
+            }
+
+            if (novoStatus == StatusTarefa.Concluida && verificaTarefa.Status != StatusTarefa.EmAndamento)
+            {
+                return BadRequest(new { message = "Ooops! O status da tarefa só pode alterado para 'Concluída' se estiver com o status 'Em Andamento'." });
+            }
+
+            await _tarefaRepository.UpdateStatusAsync(id, novoStatus);
+
+            await _hub.Clients.All.SendAsync("O status de uma tarefa foi alterado", new { id, novoStatus });
 
             return NoContent();
         }
