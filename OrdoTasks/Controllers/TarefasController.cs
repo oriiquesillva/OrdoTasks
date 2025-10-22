@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using OrdoTasks.Hubs;
 using OrdoTasksApplication.Interfaces;
+using OrdoTasksDomain.Entities;
 using OrdoTasksDomain.Enums;
 
 namespace OrdoTasks.Controllers
@@ -40,6 +41,26 @@ namespace OrdoTasks.Controllers
             }
 
             return Ok(tarefa);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTask([FromBody] Tarefa tarefa)
+        {
+            var projeto = await _projetoRepository.GetByIdAsync(tarefa.ProjetoId);
+
+            if (projeto == null)
+            {
+                return BadRequest(new { message = "Ooops! Não foi possível localizer esse projeto." });
+            }
+
+            tarefa.Status = StatusTarefa.Pendente;
+            tarefa.DataCriacao = DateTime.UtcNow;
+
+            var result = await _tarefaRepository.CreateAsync(tarefa);
+
+            await _hub.Clients.All.SendAsync("Uma nova tarefa foi criada", tarefa);
+
+            return CreatedAtAction(nameof(GetTaskById), new { id = result }, tarefa);
         }
     }
 }
