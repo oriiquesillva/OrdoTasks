@@ -28,7 +28,7 @@ namespace OrdoTasksApplication.UseCases
 
             if (verificaTarefa.Status == StatusTarefa.EmAndamento)
             {
-                throw new StatusInvalidoException("Ooops! O status da tarefa só pode ser alterado para 'Em Andamento' se estiver com o status 'Pendente'.");
+                throw new StatusInvalidoException("Ooops! Tarefas com o status 'Em Andamento' não podem ser removidas.");
             }
 
             await _tarefaRepository.DeleteAsync(id);

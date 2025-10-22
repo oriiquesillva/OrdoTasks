@@ -153,7 +153,7 @@ namespace OrdoTasks.Controllers
 
                 return NoContent();
             }
-            catch (TarefaNaoEncontradaException ex)
+            catch (StatusInvalidoException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
