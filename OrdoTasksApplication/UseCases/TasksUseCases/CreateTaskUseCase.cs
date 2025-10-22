@@ -4,7 +4,7 @@ using OrdoTasksApplication.Interfaces;
 using OrdoTasksDomain.Entities;
 using OrdoTasksDomain.Enums;
 
-namespace OrdoTasksApplication.UseCases
+namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class CreateTaskUseCase
     {

@@ -3,7 +3,7 @@ using OrdoTasksApplication.Exceptions;
 using OrdoTasksApplication.Exceptions.Tasks;
 
 
-namespace OrdoTasksApplication.UseCases
+namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class UpdateTaskStatusUseCase
     {

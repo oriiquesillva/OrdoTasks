@@ -4,7 +4,7 @@ using OrdoTasks.Hubs;
 using OrdoTasksApplication.Exceptions.Projects;
 using OrdoTasksApplication.Exceptions.Tasks;
 using OrdoTasksApplication.Interfaces;
-using OrdoTasksApplication.UseCases;
+using OrdoTasksApplication.UseCases.TasksUseCases;
 using OrdoTasksDomain.Entities;
 using OrdoTasksDomain.Enums;
 

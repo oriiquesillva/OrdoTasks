@@ -1,6 +1,6 @@
 using OrdoTasks.Hubs;
 using OrdoTasksApplication.Interfaces;
-using OrdoTasksApplication.UseCases;
+using OrdoTasksApplication.UseCases.TasksUseCases;
 using OrdoTasksInfrastructure.Repositories;
 using Serilog;
 

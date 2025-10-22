@@ -19,4 +19,8 @@
     <ProjectReference Include="..\OrdoTasksDomain\OrdoTasksDomain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Project UseCases\" />
+  </ItemGroup>
+
 </Project>
