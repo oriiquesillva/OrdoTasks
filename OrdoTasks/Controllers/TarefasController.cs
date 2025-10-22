@@ -58,7 +58,7 @@ namespace OrdoTasks.Controllers
 
             var result = await _tarefaRepository.CreateAsync(tarefa);
 
-            await _hub.Clients.All.SendAsync("Uma nova tarefa foi criada", tarefa);
+            await _hub.Clients.All.SendAsync("Uma tarefa foi criada", tarefa);
 
             return CreatedAtAction(nameof(GetTaskById), new { id = result }, tarefa);
         }
@@ -105,6 +105,28 @@ namespace OrdoTasks.Controllers
             await _tarefaRepository.UpdateStatusAsync(id, novoStatus);
 
             await _hub.Clients.All.SendAsync("O status de uma tarefa foi alterado", new { id, novoStatus });
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTask(int id)
+        {
+            var verificaTarefa = await _tarefaRepository.GetByIdAsync(id);
+
+            if (verificaTarefa == null)
+            {
+                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa." });
+            }
+
+            if (verificaTarefa.Status == StatusTarefa.EmAndamento)
+            {
+                return BadRequest(new { message = "Ooops! Não é possível excluir uma tarefa que está em andamento" });
+            }
+
+            await _tarefaRepository.DeleteAsync(id);
+
+            await _hub.Clients.All.SendAsync("Uma tarefa foi removida", id);
 
             return NoContent();
         }
