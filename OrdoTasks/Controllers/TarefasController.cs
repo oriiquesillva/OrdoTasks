@@ -28,5 +28,18 @@ namespace OrdoTasks.Controllers
 
             return Ok(tarefas);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTaskById(int id)
+        {
+            var tarefa = await _tarefaRepository.GetByIdAsync(id);
+
+            if (tarefa == null)
+            {
+                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa" });
+            }
+
+            return Ok(tarefa);
+        }
     }
 }
