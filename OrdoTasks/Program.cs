@@ -1,5 +1,6 @@
 using OrdoTasks.Hubs;
 using OrdoTasksApplication.Interfaces;
+using OrdoTasksApplication.UseCases;
 using OrdoTasksInfrastructure.Repositories;
 using Serilog;
 
@@ -21,6 +22,15 @@ builder.Services.AddSignalR();
 // Injeção de dependências (exemplo)
 builder.Services.AddScoped<IProjetoRepository, ProjetoRepository>();
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddScoped<GetAllTasksUseCase>();
+builder.Services.AddScoped<GetTaskByIdUseCase>();
+builder.Services.AddScoped<CreateTaskUseCase>();
+builder.Services.AddScoped<UpdateTaskUseCase>();
+builder.Services.AddScoped<UpdateTaskStatusUseCase>();
+builder.Services.AddScoped<DeleteTaskUseCase>();
+builder.Services.AddScoped<GetDelayedTaskUseCase>();
+
+
 
 var app = builder.Build();
 
