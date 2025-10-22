@@ -48,6 +48,7 @@ namespace OrdoTasks.Controllers
             projeto.DataCriacao = DateTime.UtcNow;
 
             var result = await _projetoRepository.CreateAsync(projeto);
+
             projeto.Id = result;
 
             return Ok(projeto);

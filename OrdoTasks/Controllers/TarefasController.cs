@@ -62,5 +62,24 @@ namespace OrdoTasks.Controllers
 
             return CreatedAtAction(nameof(GetTaskById), new { id = result }, tarefa);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTask(int id, [FromBody] Tarefa tarefa)
+        {
+            var verificaTarefa = await _projetoRepository.GetByIdAsync(id);
+
+            if (verificaTarefa == null)
+            {
+                return BadRequest(new { message = "Ooops! Não foi possível localizer essa tarefa." });
+            }
+
+            tarefa.Id = id;
+
+            await _tarefaRepository.UpdateAsync(tarefa);
+
+            await _hub.Clients.All.SendAsync("Uma Tarefa foi atualizada", tarefa);
+
+            return NoContent();
+        }
     }
 }
