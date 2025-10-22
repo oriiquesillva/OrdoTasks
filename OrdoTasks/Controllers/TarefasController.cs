@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using OrdoTasks.Hubs;
+using OrdoTasksApplication.Exceptions.Projects;
+using OrdoTasksApplication.Exceptions.Tasks;
 using OrdoTasksApplication.Interfaces;
+using OrdoTasksApplication.UseCases;
 using OrdoTasksDomain.Entities;
 using OrdoTasksDomain.Enums;
 
@@ -13,130 +16,166 @@ namespace OrdoTasks.Controllers
     {
         private readonly ITarefaRepository _tarefaRepository;
         private readonly IProjetoRepository _projetoRepository;
+        private readonly GetAllTasksUseCase _getAllTasksUseCase;
+        private readonly GetTaskByIdUseCase _getTaskByIdUseCase;
+        private readonly CreateTaskUseCase _createTaskUseCase;
+        private readonly UpdateTaskUseCase _updateTaskUseCase;
+        private readonly UpdateTaskStatusUseCase _updateTaskStatusUseCase;
+        private readonly DeleteTaskUseCase _deleteTaskUseCase;
+        private readonly GetDelayedTaskUseCase _getDelayedTaskUseCase;
         private readonly IHubContext<NotificationHub> _hub;
 
-        public TarefasController(ITarefaRepository tarefaRepository, IProjetoRepository projetoRepository, IHubContext<NotificationHub> hub)
+        public TarefasController(ITarefaRepository tarefaRepository,
+            IProjetoRepository projetoRepository,
+            GetAllTasksUseCase getAllTasksUseCase,
+            GetTaskByIdUseCase getTaskByIdUseCase,
+            CreateTaskUseCase createTaskUseCase,
+            UpdateTaskUseCase updateTaskUseCase,
+            UpdateTaskStatusUseCase updateTaskStatusUseCase,
+            DeleteTaskUseCase deleteTaskUseCase,
+            GetDelayedTaskUseCase getDelayedTaskUseCase,
+            IHubContext<NotificationHub> hub)
         {
             _tarefaRepository = tarefaRepository;
             _projetoRepository = projetoRepository;
+            _getAllTasksUseCase = getAllTasksUseCase;
+            _getTaskByIdUseCase = getTaskByIdUseCase;
+            _createTaskUseCase = createTaskUseCase;
+            _updateTaskUseCase = updateTaskUseCase;
+            _updateTaskStatusUseCase = updateTaskStatusUseCase;
+            _deleteTaskUseCase = deleteTaskUseCase;
+            _getDelayedTaskUseCase = getDelayedTaskUseCase;
             _hub = hub;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllTasks([FromQuery] int? projetoId, [FromQuery] StatusTarefa? status, [FromQuery] string? responsavel, [FromQuery] DateTime? prazo)
         {
-            var tarefas = await _tarefaRepository.GetAllAsync(projetoId, status, responsavel, prazo);
+            try
+            {
+                var result = await _getAllTasksUseCase.Run(projetoId, status, responsavel, prazo);
 
-            return Ok(tarefas);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTaskById(int id)
         {
-            var tarefa = await _tarefaRepository.GetByIdAsync(id);
-
-            if (tarefa == null)
+            try
             {
-                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa" });
+                var tarefa = await _getTaskByIdUseCase.Run(id);
+                return Ok(tarefa);
             }
-
-            return Ok(tarefa);
+            catch (TarefaNaoEncontradaException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] Tarefa tarefa)
         {
-            var projeto = await _projetoRepository.GetByIdAsync(tarefa.ProjetoId);
-
-            if (projeto == null)
+            try
             {
-                return BadRequest(new { message = "Ooops! Não foi possível localizer esse projeto." });
+                var result = await _createTaskUseCase.Run(tarefa);
+                await _hub.Clients.All.SendAsync("Uma tarefa foi criada", tarefa);
+
+                return CreatedAtAction(nameof(GetTaskById), new { id = result.Id }, result.Tarefa);
             }
-
-            tarefa.Status = StatusTarefa.Pendente;
-            tarefa.DataCriacao = DateTime.UtcNow;
-
-            var result = await _tarefaRepository.CreateAsync(tarefa);
-
-            await _hub.Clients.All.SendAsync("Uma tarefa foi criada", tarefa);
-
-            return CreatedAtAction(nameof(GetTaskById), new { id = result }, tarefa);
+            catch (ProjetoNaoEncontradoException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, [FromBody] Tarefa tarefa)
         {
-            var verificaTarefa = await _tarefaRepository.GetByIdAsync(id);
-
-            if (verificaTarefa == null)
+            try
             {
-                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa." });
+                await _updateTaskUseCase.Run(id, tarefa);
+
+                await _hub.Clients.All.SendAsync("Uma Tarefa foi atualizada", tarefa);
+
+                return NoContent();
             }
-
-            tarefa.Id = id;
-
-            await _tarefaRepository.UpdateAsync(tarefa);
-
-            await _hub.Clients.All.SendAsync("Uma Tarefa foi atualizada", tarefa);
-
-            return NoContent();
+            catch (TarefaNaoEncontradaException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateTaskStatus(int id, [FromBody] StatusTarefa novoStatus)
         {
-            var verificaTarefa = await _tarefaRepository.GetByIdAsync(id);
-
-            if (verificaTarefa == null)
+            try
             {
-                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa." });
-            }
+                await _updateTaskStatusUseCase.Run(id, novoStatus);
 
-            if (novoStatus == StatusTarefa.EmAndamento && verificaTarefa.Status != StatusTarefa.Pendente)
+                return NoContent();
+            }
+            catch (TarefaNaoEncontradaException ex)
             {
-                return BadRequest(new {message = "Ooops! O status da tarefa só pode alterado para 'Em Andamento' se estiver com o status 'Pendente'." });
+                return NotFound(new { message = ex.Message });
             }
-
-            if (novoStatus == StatusTarefa.Concluida && verificaTarefa.Status != StatusTarefa.EmAndamento)
+            catch (StatusInvalidoException ex)
             {
-                return BadRequest(new { message = "Ooops! O status da tarefa só pode alterado para 'Concluída' se estiver com o status 'Em Andamento'." });
+                return BadRequest(new { message = ex.Message });
             }
-
-            await _tarefaRepository.UpdateStatusAsync(id, novoStatus);
-
-            await _hub.Clients.All.SendAsync("O status de uma tarefa foi alterado", new { id, novoStatus });
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
-            var verificaTarefa = await _tarefaRepository.GetByIdAsync(id);
-
-            if (verificaTarefa == null)
+            try
             {
-                return NotFound(new { message = "Ooops! Não foi possível localizar essa tarefa." });
-            }
+                await _deleteTaskUseCase.Run(id);
 
-            if (verificaTarefa.Status == StatusTarefa.EmAndamento)
+                await _hub.Clients.All.SendAsync("Uma tarefa foi removida", id);
+
+                return NoContent();
+            }
+            catch (TarefaNaoEncontradaException ex)
             {
-                return BadRequest(new { message = "Ooops! Não é possível excluir uma tarefa que está em andamento" });
+                return NotFound(new { message = ex.Message });
             }
-
-            await _tarefaRepository.DeleteAsync(id);
-
-            await _hub.Clients.All.SendAsync("Uma tarefa foi removida", id);
-
-            return NoContent();
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpGet("atrasadas")]
-        public async Task<IActionResult> GetDelayedTasks(int id)
+        public async Task<IActionResult> GetDelayedTasks()
         {
-            var tarefas = await _tarefaRepository.GetByIdAsync(id);
+            try
+            {
+                var result = await _getDelayedTaskUseCase.Run();
 
-            return Ok(tarefas);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
     }
 }
