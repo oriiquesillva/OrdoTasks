@@ -7,7 +7,7 @@ namespace OrdoTasks.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProjetosController : Controller
+    public class ProjetosController : ControllerBase
     {
         private readonly IProjetoRepository _projetoRepository;
 
@@ -80,9 +80,9 @@ namespace OrdoTasks.Controllers
                 return NotFound(new { message = "Ooops! Não foi possível encontrar o projeto" });
             }
 
-            bool verificaTarefa = await _projetoRepository.HasTarefasAsync(id);
+            bool verificaTarefas = await _projetoRepository.HasTarefasAsync(id);
 
-            if (verificaTarefa)
+            if (verificaTarefas)
             {
                 return BadRequest(new { message = "Não é possível excluir um projeto que possui tarefas vinculadas" });
             }
