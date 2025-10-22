@@ -130,5 +130,13 @@ namespace OrdoTasks.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("atrasadas")]
+        public async Task<IActionResult> GetDelayedTasks(int id)
+        {
+            var tarefas = await _tarefaRepository.GetByIdAsync(id);
+
+            return Ok(tarefas);
+        }
     }
 }
