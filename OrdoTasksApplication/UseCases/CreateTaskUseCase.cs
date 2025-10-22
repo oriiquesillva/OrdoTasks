@@ -28,6 +28,7 @@ namespace OrdoTasksApplication.UseCases
             tarefa.DataCriacao = DateTime.UtcNow;
 
             var id = await _tarefaRepository.CreateAsync(tarefa);
+            tarefa.Id = id; 
 
             return new CreateTaskResult
             {
