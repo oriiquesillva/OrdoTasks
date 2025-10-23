@@ -12,9 +12,9 @@ namespace OrdoTasksApplication.UseCases.Project_UseCases
 {
     public class UpdateProjectUseCase
     {
-        private readonly IProjetoRepository _projetoRepository;
+        private readonly IOrdoTasksProjectRepository _projetoRepository;
 
-        public UpdateProjectUseCase(IProjetoRepository projetoRepository)
+        public UpdateProjectUseCase(IOrdoTasksProjectRepository projetoRepository)
         {
             _projetoRepository = projetoRepository;
         }

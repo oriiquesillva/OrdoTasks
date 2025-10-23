@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrdoTasksApplication.Interfaces
 {
-    public interface IProjetoRepository
+    public interface IOrdoTasksProjectRepository
     {
         Task<IEnumerable<Projeto>> GetAllAsync();
         Task<Projeto?> GetByIdAsync(int id);

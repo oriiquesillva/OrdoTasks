@@ -15,7 +15,7 @@ namespace OrdoTasks.Controllers
     public class TarefasController : ControllerBase
     {
         private readonly IOrdoTasksTaskRepository _tasksrepository;
-        private readonly IProjetoRepository _projetoRepository;
+        private readonly IOrdoTasksProjectRepository _projetoRepository;
         private readonly GetAllTasksUseCase _getAllTasksUseCase;
         private readonly GetTaskByIdUseCase _getTaskByIdUseCase;
         private readonly CreateTaskUseCase _createTaskUseCase;
@@ -26,7 +26,7 @@ namespace OrdoTasks.Controllers
         private readonly IHubContext<NotificationHub> _hub;
 
         public TarefasController(IOrdoTasksTaskRepository tasksrepository,
-            IProjetoRepository projetoRepository,
+            IOrdoTasksProjectRepository projetoRepository,
             GetAllTasksUseCase getAllTasksUseCase,
             GetTaskByIdUseCase getTaskByIdUseCase,
             CreateTaskUseCase createTaskUseCase,

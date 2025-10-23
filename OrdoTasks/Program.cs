@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 // INJEÇÃO DE DEPENDÊNCIA DO PROJETO
-builder.Services.AddScoped<IProjetoRepository, ProjetoRepository>();
+builder.Services.AddScoped<IOrdoTasksProjectRepository, OrdoTasksProjectRepository>();
 builder.Services.AddScoped<GetAllProjectsUseCase>();
 builder.Services.AddScoped<GetProjetByIdUseCase>();
 builder.Services.AddScoped<CreateProjectUseCase>();

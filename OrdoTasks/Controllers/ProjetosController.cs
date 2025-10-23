@@ -14,14 +14,14 @@ namespace OrdoTasks.Controllers
     [Route("api/[controller]")]
     public class ProjetosController : ControllerBase
     {
-        private readonly IProjetoRepository _projetoRepository;
+        private readonly IOrdoTasksProjectRepository _projectRepository;
         private readonly GetAllProjectsUseCase _getAllProjectsUseCase;
         private readonly GetProjetByIdUseCase _getProjetByIdUseCase;
         private readonly CreateProjectUseCase _createProjectUseCase;
         private readonly UpdateProjectUseCase _updateProjectUseCase;
         private readonly DeleteProjectUseCase _deleteProjectUseCase;
 
-        public ProjetosController(IProjetoRepository projetoRepository,
+        public ProjetosController(IOrdoTasksProjectRepository projectRepository,
             GetAllProjectsUseCase getAllProjectsUseCase,
             GetProjetByIdUseCase getProjetByIdUseCase,
             CreateProjectUseCase createProjectUseCase,
@@ -29,7 +29,7 @@ namespace OrdoTasks.Controllers
             DeleteProjectUseCase deleteProjectUseCase
         )
         {
-            _projetoRepository = projetoRepository;
+            _projectRepository = projectRepository;
             _getAllProjectsUseCase = getAllProjectsUseCase;
             _getProjetByIdUseCase = getProjetByIdUseCase;
             _createProjectUseCase = createProjectUseCase;

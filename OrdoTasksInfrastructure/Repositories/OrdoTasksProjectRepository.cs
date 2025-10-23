@@ -5,10 +5,10 @@ using OrdoTasksApplication.Interfaces;
 using OrdoTasksDomain.Entities;
 
 
-public class ProjetoRepository : IProjetoRepository
+public class OrdoTasksProjectRepository : IOrdoTasksProjectRepository
 {
     private readonly string _conn;
-    public ProjetoRepository(IConfiguration config) => _conn = config.GetConnectionString("DefaultConnection");
+    public OrdoTasksProjectRepository(IConfiguration config) => _conn = config.GetConnectionString("DefaultConnection");
 
     public async Task<int> CreateAsync(Projeto projeto)
     {

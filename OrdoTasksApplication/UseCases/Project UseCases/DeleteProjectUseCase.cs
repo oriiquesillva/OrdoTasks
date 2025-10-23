@@ -12,9 +12,9 @@ namespace OrdoTasksApplication.UseCases.Project_UseCases
 {
     public class DeleteProjectUseCase
     {
-        private readonly IProjetoRepository _projetoRepository;
+        private readonly IOrdoTasksProjectRepository _projetoRepository;
 
-        public DeleteProjectUseCase(IProjetoRepository projetoRepository)
+        public DeleteProjectUseCase(IOrdoTasksProjectRepository projetoRepository)
         {
             _projetoRepository = projetoRepository;
         }
