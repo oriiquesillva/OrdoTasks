@@ -1,5 +1,6 @@
 using OrdoTasks.Hubs;
 using OrdoTasksApplication.Interfaces;
+using OrdoTasksApplication.UseCases.DashboardUseCases;
 using OrdoTasksApplication.UseCases.Project_UseCases;
 using OrdoTasksApplication.UseCases.TasksUseCases;
 using OrdoTasksInfrastructure.Repositories;
@@ -7,23 +8,28 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar Serilog
+// SERILOG
 builder.Host.UseSerilog((ctx, lc) => lc
     .WriteTo.Console()
     .ReadFrom.Configuration(ctx.Configuration));
 
-// Controllers + Swagger
+// CONTROLLERS / SWAGGER
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// SignalR
+// SIGNALR
 builder.Services.AddSignalR();
 
-// Injeção de dependências (exemplo)
+// INJEÇÃO DE DEPENDÊNCIA DO PROJETO
 builder.Services.AddScoped<IProjetoRepository, ProjetoRepository>();
 builder.Services.AddScoped<GetAllProjectsUseCase>();
+builder.Services.AddScoped<GetProjetByIdUseCase>();
+builder.Services.AddScoped<CreateProjectUseCase>();
+builder.Services.AddScoped<UpdateProjectUseCase>();
+builder.Services.AddScoped<DeleteProjectUseCase>();
 
+// INJEÇÃO DE DEPENDÊNCIA DAS TAREFAS
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
 builder.Services.AddScoped<GetAllTasksUseCase>();
 builder.Services.AddScoped<GetTaskByIdUseCase>();
@@ -33,11 +39,13 @@ builder.Services.AddScoped<UpdateTaskStatusUseCase>();
 builder.Services.AddScoped<DeleteTaskUseCase>();
 builder.Services.AddScoped<GetDelayedTaskUseCase>();
 
+// INJEÇÃO DE DEPENDÊNCIA DO DASHBOARD
+builder.Services.AddScoped<DashboardUseCase>();
 
 
 var app = builder.Build();
 
-// Swagger
+// SWAGGER
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
