@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 using OrdoTasksApplication.Interfaces;
+using OrdoTasksApplication.UseCases.Project_UseCases;
+using OrdoTasksApplication.UseCases.TasksUseCases;
 using OrdoTasksDomain.Entities;
 
 namespace OrdoTasks.Controllers
@@ -10,16 +12,20 @@ namespace OrdoTasks.Controllers
     public class ProjetosController : ControllerBase
     {
         private readonly IProjetoRepository _projetoRepository;
+        private readonly GetAllProjectsUseCase _getAllProjectsUseCase;
 
-        public ProjetosController(IProjetoRepository projetoRepository)
+        public ProjetosController(IProjetoRepository projetoRepository,
+            GetAllProjectsUseCase getAllProjectsUseCase
+        )
         {
             _projetoRepository = projetoRepository;
+            _getAllProjectsUseCase = getAllProjectsUseCase;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProjects()
         {
-            var projetos = await _projetoRepository.GetAllAsync();
+            var projetos = await _getAllProjectsUseCase.Run();
 
             return Ok(projetos);
         }
