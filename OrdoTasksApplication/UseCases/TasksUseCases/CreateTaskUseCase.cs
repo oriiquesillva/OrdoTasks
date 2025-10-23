@@ -22,7 +22,7 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
             var projeto = await _projetoRepository.GetByIdAsync(tarefa.ProjetoId);
 
             if (projeto == null)
-                throw new ProjetoNaoEncontradoException();
+                throw new ProjectNotFoundException();
 
             tarefa.Status = StatusTarefa.Pendente;
             tarefa.DataCriacao = DateTime.UtcNow;

@@ -33,6 +33,5 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
 
             await _tarefaRepository.DeleteAsync(id);
         }
-
     }
 }
