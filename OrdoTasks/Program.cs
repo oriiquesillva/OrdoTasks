@@ -30,7 +30,7 @@ builder.Services.AddScoped<UpdateProjectUseCase>();
 builder.Services.AddScoped<DeleteProjectUseCase>();
 
 // INJEÇÃO DE DEPENDÊNCIA DAS TAREFAS
-builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddScoped<IOrdoTasksTaskRepository, OrdoTasksTaskRepository>();
 builder.Services.AddScoped<GetAllTasksUseCase>();
 builder.Services.AddScoped<GetTaskByIdUseCase>();
 builder.Services.AddScoped<CreateTaskUseCase>();

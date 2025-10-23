@@ -7,8 +7,8 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class UpdateTaskStatusUseCase
     {
-        private readonly ITarefaRepository _repository;
-        public UpdateTaskStatusUseCase(ITarefaRepository repository)
+        private readonly IOrdoTasksTaskRepository _repository;
+        public UpdateTaskStatusUseCase(IOrdoTasksTaskRepository repository)
         {
             _repository = repository;
         }

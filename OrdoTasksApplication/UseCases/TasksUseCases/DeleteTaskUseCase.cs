@@ -10,9 +10,9 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class DeleteTaskUseCase
     {
-        private readonly ITarefaRepository _tarefaRepository;
+        private readonly IOrdoTasksTaskRepository _tarefaRepository;
 
-        public DeleteTaskUseCase(ITarefaRepository repository)
+        public DeleteTaskUseCase(IOrdoTasksTaskRepository repository)
         {
             _tarefaRepository = repository;
         }

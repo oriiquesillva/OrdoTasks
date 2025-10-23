@@ -11,8 +11,8 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class UpdateTaskUseCase
     {
-        private readonly ITarefaRepository _tarefaRepository;
-        public UpdateTaskUseCase(ITarefaRepository tarefaRepository)
+        private readonly IOrdoTasksTaskRepository _tarefaRepository;
+        public UpdateTaskUseCase(IOrdoTasksTaskRepository tarefaRepository)
         {
             _tarefaRepository = tarefaRepository;
         }

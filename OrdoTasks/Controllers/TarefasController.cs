@@ -14,7 +14,7 @@ namespace OrdoTasks.Controllers
     [Route("api/[controller]")]
     public class TarefasController : ControllerBase
     {
-        private readonly ITarefaRepository _tarefaRepository;
+        private readonly IOrdoTasksTaskRepository _tasksrepository;
         private readonly IProjetoRepository _projetoRepository;
         private readonly GetAllTasksUseCase _getAllTasksUseCase;
         private readonly GetTaskByIdUseCase _getTaskByIdUseCase;
@@ -25,7 +25,7 @@ namespace OrdoTasks.Controllers
         private readonly GetDelayedTaskUseCase _getDelayedTaskUseCase;
         private readonly IHubContext<NotificationHub> _hub;
 
-        public TarefasController(ITarefaRepository tarefaRepository,
+        public TarefasController(IOrdoTasksTaskRepository tasksrepository,
             IProjetoRepository projetoRepository,
             GetAllTasksUseCase getAllTasksUseCase,
             GetTaskByIdUseCase getTaskByIdUseCase,
@@ -36,7 +36,7 @@ namespace OrdoTasks.Controllers
             GetDelayedTaskUseCase getDelayedTaskUseCase,
             IHubContext<NotificationHub> hub)
         {
-            _tarefaRepository = tarefaRepository;
+            _tasksrepository = tasksrepository;
             _projetoRepository = projetoRepository;
             _getAllTasksUseCase = getAllTasksUseCase;
             _getTaskByIdUseCase = getTaskByIdUseCase;

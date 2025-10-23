@@ -8,10 +8,10 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class CreateTaskUseCase
     {
-        private readonly ITarefaRepository _tarefaRepository;
+        private readonly IOrdoTasksTaskRepository _tarefaRepository;
         private readonly IProjetoRepository _projetoRepository;
 
-        public CreateTaskUseCase(ITarefaRepository tarefaRepository, IProjetoRepository projetoRepository)
+        public CreateTaskUseCase(IOrdoTasksTaskRepository tarefaRepository, IProjetoRepository projetoRepository)
         {
             _tarefaRepository = tarefaRepository;
             _projetoRepository = projetoRepository;

@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace OrdoTasksInfrastructure.Repositories
 {
-    public class TarefaRepository : ITarefaRepository
+    public class OrdoTasksTaskRepository : IOrdoTasksTaskRepository
     {
         private readonly string _conn;
 
-        public TarefaRepository(IConfiguration config)
+        public OrdoTasksTaskRepository(IConfiguration config)
         {
             _conn = config.GetConnectionString("DefaultConnection");
         }

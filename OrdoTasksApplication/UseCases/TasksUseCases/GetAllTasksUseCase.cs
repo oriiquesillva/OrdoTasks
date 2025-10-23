@@ -13,9 +13,9 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class GetAllTasksUseCase
     {
-        private readonly ITarefaRepository _repository;
+        private readonly IOrdoTasksTaskRepository _repository;
 
-        public GetAllTasksUseCase(ITarefaRepository repository)
+        public GetAllTasksUseCase(IOrdoTasksTaskRepository repository)
         {
             _repository = repository;
         }

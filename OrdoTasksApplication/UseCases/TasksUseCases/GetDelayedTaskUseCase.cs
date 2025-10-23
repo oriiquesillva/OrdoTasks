@@ -11,9 +11,9 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
 {
     public class GetDelayedTaskUseCase
     {
-        private readonly ITarefaRepository _tarefaRepository;
+        private readonly IOrdoTasksTaskRepository _tarefaRepository;
 
-        public GetDelayedTaskUseCase(ITarefaRepository tarefaRepository)
+        public GetDelayedTaskUseCase(IOrdoTasksTaskRepository tarefaRepository)
         {
             _tarefaRepository = tarefaRepository;
 

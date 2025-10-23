@@ -5,9 +5,9 @@ namespace OrdoTasksApplication.UseCases.DashboardUseCases
 {
     public class DashboardUseCase
     {
-        private readonly ITarefaRepository _tarefaRepository;
+        private readonly IOrdoTasksTaskRepository _tarefaRepository;
 
-        public DashboardUseCase(ITarefaRepository tarefaRepository)
+        public DashboardUseCase(IOrdoTasksTaskRepository tarefaRepository)
         {
             _tarefaRepository = tarefaRepository ?? throw new ArgumentNullException(nameof(tarefaRepository));
         }

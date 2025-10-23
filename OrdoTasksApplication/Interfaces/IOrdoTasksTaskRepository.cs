@@ -1,7 +1,7 @@
 ﻿using OrdoTasksDomain.Entities;
 using OrdoTasksDomain.Enums;
 
-public interface ITarefaRepository
+public interface IOrdoTasksTaskRepository
 {
     Task<IEnumerable<Tarefa>> GetAllAsync(int? projetoId = null, StatusTarefa? status = null, string? responsavel = null, DateTime? prazo = null);
     Task<Tarefa?> GetByIdAsync(int id);
