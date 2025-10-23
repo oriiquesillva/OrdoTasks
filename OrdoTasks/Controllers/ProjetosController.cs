@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.VisualBasic;
+using OrdoTasksApplication.Exceptions.Projects;
+using OrdoTasksApplication.Exceptions.Tasks;
 using OrdoTasksApplication.Interfaces;
 using OrdoTasksApplication.UseCases.Project_UseCases;
 using OrdoTasksApplication.UseCases.TasksUseCases;
@@ -13,13 +16,25 @@ namespace OrdoTasks.Controllers
     {
         private readonly IProjetoRepository _projetoRepository;
         private readonly GetAllProjectsUseCase _getAllProjectsUseCase;
+        private readonly GetProjetByIdUseCase _getProjetByIdUseCase;
+        private readonly CreateProjectUseCase _createProjectUseCase;
+        private readonly UpdateProjectUseCase _updateProjectUseCase;
+        private readonly DeleteProjectUseCase _deleteProjectUseCase;
 
         public ProjetosController(IProjetoRepository projetoRepository,
-            GetAllProjectsUseCase getAllProjectsUseCase
+            GetAllProjectsUseCase getAllProjectsUseCase,
+            GetProjetByIdUseCase getProjetByIdUseCase,
+            CreateProjectUseCase createProjectUseCase,
+            UpdateProjectUseCase updateProjectUseCase,
+            DeleteProjectUseCase deleteProjectUseCase
         )
         {
             _projetoRepository = projetoRepository;
             _getAllProjectsUseCase = getAllProjectsUseCase;
+            _getProjetByIdUseCase = getProjetByIdUseCase;
+            _createProjectUseCase = createProjectUseCase;
+            _updateProjectUseCase = updateProjectUseCase;
+            _deleteProjectUseCase = deleteProjectUseCase;
         }
 
         [HttpGet]
@@ -33,70 +48,80 @@ namespace OrdoTasks.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProjectById(int id)
         {
-            var projeto = await _projetoRepository.GetByIdAsync(id);
-
-            if (projeto == null)
+            try
             {
-                return NotFound(new { message = "Ooops! Não foi possível localizar esse projeto" });
-            }
+                var projeto = await _getProjetByIdUseCase.Run(id);
 
-            return Ok(projeto);
+                return Ok(projeto);
+            }
+            catch (ProjectNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateProject([FromBody] Projeto projeto)
         {
-            if (string.IsNullOrWhiteSpace(projeto.Nome))
+            try
             {
-                return BadRequest(new { message = "Ooops! Para criar um projeto e obrigatório informar um nome" });
+                var result = await _createProjectUseCase.Run(projeto);
+                return CreatedAtAction(nameof(GetProjectById), new { id = result.Id }, result.Projeto);
             }
-
-            projeto.DataCriacao = DateTime.UtcNow;
-
-            var result = await _projetoRepository.CreateAsync(projeto);
-
-            projeto.Id = result;
-
-            return Ok(projeto);
+            catch (InvalidProjectDataException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateProject(int id, [FromBody] Projeto projeto)
         {
-            var verificaProjeto = await _projetoRepository.GetByIdAsync(id);
-
-            if (verificaProjeto == null)
+            try
             {
-                return NotFound(new { message = "Ooops! Não foi possível encontrar o projeto" });
+                await _updateProjectUseCase.Run(id, projeto);
+
+                return NoContent();
             }
-
-            projeto.Id = id;
-
-            await _projetoRepository.UpdateAsync(projeto);
-
-            return NoContent();
+            catch (ProjectNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
-            var verificaProjeto = await _projetoRepository.GetByIdAsync(id);
-
-            if (verificaProjeto == null)
+            try
             {
-                return NotFound(new { message = "Ooops! Não foi possível encontrar o projeto" });
+                await _deleteProjectUseCase.Run(id);
+
+                return NoContent();
             }
-
-            bool verificaTarefas = await _projetoRepository.HasTarefasAsync(id);
-
-            if (verificaTarefas)
+            catch (ProjectNotFoundException ex)
             {
-                return BadRequest(new { message = "Não é possível excluir um projeto que possui tarefas vinculadas" });
+                return NotFound(new { message = ex.Message });
             }
-
-            await _projetoRepository.DeleteAsync(id);
-
-            return NoContent();
+            catch (UnauthorizedDeleteProjectException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
     }
 }

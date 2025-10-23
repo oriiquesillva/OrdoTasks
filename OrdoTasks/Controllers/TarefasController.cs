@@ -87,7 +87,7 @@ namespace OrdoTasks.Controllers
 
                 return CreatedAtAction(nameof(GetTaskById), new { id = result.Id }, result.Tarefa);
             }
-            catch (ProjetoNaoEncontradoException ex)
+            catch (ProjectNotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
