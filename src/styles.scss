@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+@use "./app/shared/styles/_reset.scss";
+@use "./app/shared/styles/font-family.scss";
+
+:root {
+  font-size: 16px;
+  font-family: "Lato";
+  margin: 0;
+}
+
+.overlay-backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.overlay-panel-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swal-toast {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-weight: 500;
+  padding: 12px 18px !important;
+}
