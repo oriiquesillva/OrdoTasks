@@ -1,0 +1,62 @@
+<div class="container">
+  <section class="cards">
+    <div class="project-box">
+      <button class="icon-btn back" routerLink="/home">⬅️</button>
+
+      <div class="header">
+        <div class="card-title">
+          <h1>ORDOTASKS</h1>
+          <h3>Projetos</h3>
+        </div>
+        <button class="btn-create" (click)="openProjectModal()">
+          + Criar Projeto
+        </button>
+      </div>
+
+      <ul class="project-list">
+        <li
+          *ngFor="let Projeto of dadosProjeto$ | async"
+          class="project-item"
+          id="{{ Projeto.id }}"
+        >
+          <div class="project-container">
+            <div class="project-card" [routerLink]="`/tasks/${Projeto.id}`">
+              <div class="info">
+                <h2 class="titulo">{{ Projeto.nome }}</h2>
+                <p class="data">
+                  Data: {{ Projeto.dataCriacao | date : "dd/MM/yyyy" }}
+                </p>
+                <p class="descricao">
+                  {{ Projeto.descricao || "Sem descrição" }}
+                </p>
+              </div>
+
+              <div class="taxa-conclusao">
+                <span>{{ Projeto.progressoPercentual || 0 }}%</span>
+                <p>Taxa de Conclusão</p>
+              </div>
+            </div>
+
+            <div class="outside-buttons">
+              <button
+                class="icon-btn edit"
+                (click)="editarProjeto(Projeto); $event.stopPropagation()"
+              >
+                ✏️
+              </button>
+              <button
+                class="icon-btn delete"
+                (click)="
+                  deletarProjeto(Projeto.id.toString());
+                  $event.stopPropagation()
+                "
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>

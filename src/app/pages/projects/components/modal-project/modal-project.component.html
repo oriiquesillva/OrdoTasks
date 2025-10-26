@@ -1,0 +1,52 @@
+<div class="modal-container">
+  <div class="modal-box">
+    <div class="modal-title">
+      <h2>OrdoTaks</h2>
+      <h4>{{ dadoProjeto?.id ? "Editar" : "Criar" }} Projeto</h4>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="salvar()" class="form">
+      <div class="form-group">
+        <label for="nome">Nome do Projeto</label>
+        <input
+          id="nome"
+          type="text"
+          formControlName="nome"
+          placeholder="Digite o nome do projeto"
+        />
+
+        <small
+          class="error"
+          *ngIf="form.get('nome')?.touched && form.get('nome')?.invalid"
+        >
+          O nome é obrigatório e deve ter pelo menos 3 caracteres.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="descricao">Descrição</label>
+        <textarea
+          id="descricao"
+          formControlName="descricao"
+          placeholder="Descreva o projeto"
+        ></textarea>
+
+        <small
+          class="error"
+          *ngIf="
+            form.get('descricao')?.touched && form.get('descricao')?.invalid
+          "
+        >
+          A descrição é obrigatória e deve ter pelo menos 5 caracteres.
+        </small>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn salvar">Salvar</button>
+        <button type="button" class="btn cancelar" (click)="fechar()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
