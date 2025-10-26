@@ -1,0 +1,94 @@
+<div class="container">
+  <section class="cards">
+    <div class="card-container">
+      <div class="card-title">
+        <h1>ORDOTASKS</h1>
+        <h3>Dashboard</h3>
+      </div>
+
+      <div class="cards-layout">
+        <!-- Card grande à esquerda -->
+        <div class="card card-large">
+          <div class="card-header">
+            <h3>Total de tarefas por status</h3>
+          </div>
+
+          <div class="card-item">
+            <span class="icon">⏸️</span>
+            <span class="label">Pendentes</span>
+            <span class="value">{{
+              (dadosMetricas$ | async)?.pendingTasks ?? "-"
+            }}</span>
+          </div>
+
+          <div class="card-item">
+            <span class="icon">🕓</span>
+            <span class="label">Em andamento</span>
+            <span class="value">{{
+              (dadosMetricas$ | async)?.runningTasks ?? "-"
+            }}</span>
+          </div>
+
+          <div class="card-item">
+            <span class="icon">✅</span>
+            <span class="label">Concluídas</span>
+            <span class="value">{{
+              (dadosMetricas$ | async)?.finishedTasks ?? "-"
+            }}</span>
+          </div>
+
+          <div class="card-item">
+            <span class="icon">⚠️</span>
+            <span class="label">Atrasadas</span>
+            <span class="value">{{
+              (dadosMetricas$ | async)?.delayedTasks ?? "-"
+            }}</span>
+          </div>
+
+          <div class="card-item">
+            <span class="icon">🚫</span>
+            <span class="label">Canceladas</span>
+            <span class="value">{{
+              (dadosMetricas$ | async)?.canceledTasks ?? "-"
+            }}</span>
+          </div>
+        </div>
+
+        <!-- Cards menores empilhados à direita -->
+        <div class="right-cards">
+          <div class="card small">
+            <span class="icon">⚠️</span>
+            <span class="label">Tarefas atrasadas</span>
+            <span class="value">{{
+              (dadosMetricas$ | async)?.delayedTasks ?? "-"
+            }}</span>
+          </div>
+
+          <div class="card small">
+            <span class="icon">✅</span>
+            <span class="label">Tarefas concluídas no prazo</span>
+            <span class="value">{{
+              (dadosMetricas$ | async)?.finishedOnTimeTasks ?? "-"
+            }}</span>
+          </div>
+
+          <div class="card small">
+            <span class="icon">📈</span>
+            <span class="label">Taxa de conclusão</span>
+            <span class="value">
+              <ng-container *ngIf="dadosMetricas$ | async as valor">
+                {{
+                  valor?.completionRate !== null
+                    ? (valor.completionRate | number : "1.2")
+                    : "-"
+                }}%
+              </ng-container>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button class="btn" routerLink="/project">Projetos</button>
+</div>
