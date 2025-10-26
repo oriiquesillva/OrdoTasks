@@ -1,0 +1,218 @@
+<div class="container">
+  <section class="cards">
+    <div class="tasks-box">
+      <button class="icon-btn edit" routerLink="/project">⬅️</button>
+
+      <div class="card-container-title">
+        <div class="card-title">
+          <h1>ORDOTASKS</h1>
+          <h3>{{ nomeProjeto }}</h3>
+        </div>
+
+        <button class="btn-create" (click)="openTaskModal()">+ Tarefa</button>
+      </div>
+
+      <div class="select-wrapper">
+        <select class="task-select" [formControl]="filtroStatusControl">
+          <option value="todas">Todos</option>
+          <option value="pendentes">Pendentes</option>
+          <option value="andamento">Em andamento</option>
+          <option value="concluidas">Concluídas</option>
+          <option value="canceladas">Canceladas</option>
+        </select>
+
+        <select class="task-select" [formControl]="filtroPrioridadeControl">
+          <option value="todas">Todas</option>
+          <option value="0">Baixa</option>
+          <option value="1">Média</option>
+          <option value="2">Alta</option>
+        </select>
+
+        <select class="task-select" [formControl]="filtroResponsavelControl">
+          <option value="todos">Todos os responsáveis</option>
+          <option *ngFor="let resp of responsaveis" [value]="resp">
+            {{ resp }}
+          </option>
+        </select>
+      </div>
+
+      <div class="pagination-info">
+        <p>
+          Mostrando
+          <strong>{{ (paginaAtual - 1) * itensPorPagina + 1 }}</strong>
+          até
+          <strong>{{
+            Math.min(paginaAtual * itensPorPagina, totalItens)
+          }}</strong>
+          de
+          <strong>{{ totalItens }}</strong>
+          {{ totalItens === 1 ? "tarefa" : "tarefas" }}
+        </p>
+      </div>
+
+      <ul class="task-list">
+        <li
+          *ngFor="let Tarefa of tarefasPaginadas$ | async"
+          class="task-item"
+          id="{{ Tarefa.id }}"
+        >
+          <div
+            class="task-card"
+            [ngClass]="{
+              'status-pendente': Tarefa.status === 0,
+              'status-andamento': Tarefa.status === 1,
+              'status-concluida': Tarefa.status === 2,
+              'status-cancelada': Tarefa.status === 3
+            }"
+          >
+            <div class="task-header">
+              <h3 class="task-title">{{ Tarefa.titulo }}</h3>
+              <div class="task-badges">
+                <span
+                  class="badge status"
+                  [ngClass]="{
+                    pendente: Tarefa.status === 0,
+                    andamento: Tarefa.status === 1,
+                    concluida: Tarefa.status === 2,
+                    cancelada: Tarefa.status === 3
+                  }"
+                >
+                  {{
+                    Tarefa.status === 0
+                      ? "⏳ Pendente"
+                      : Tarefa.status === 1
+                      ? "🔄 Em Andamento"
+                      : Tarefa.status === 2
+                      ? "✅ Concluída"
+                      : "❌ Cancelada"
+                  }}
+                </span>
+
+                <span
+                  class="badge prioridade"
+                  [ngClass]="{
+                    baixa: Tarefa.prioridade === 0,
+                    media: Tarefa.prioridade === 1,
+                    alta: Tarefa.prioridade === 2
+                  }"
+                >
+                  {{
+                    Tarefa.prioridade === 0
+                      ? "⬇️ Baixa"
+                      : Tarefa.prioridade === 1
+                      ? "⚖️ Média"
+                      : "🔥 Alta"
+                  }}
+                </span>
+              </div>
+            </div>
+
+            <div class="task-body">
+              <p class="task-project">
+                <strong>Projeto:</strong> {{ Tarefa.projetoId }}
+              </p>
+              <p class="task-deadline">
+                <i class="fas fa-calendar-alt"></i>
+                <strong>Prazo:</strong>
+                {{ Tarefa.dataPrazo | date : "dd/MM/yyyy" }}
+              </p>
+              <p class="task-desc">{{ Tarefa.descricao }}</p>
+            </div>
+          </div>
+
+          <div class="task-actions">
+            <button
+              *ngIf="Tarefa.status === 0"
+              class="icon-btn status status-next-andamento"
+              (click)="atualizarStatus(Tarefa, 'iniciar')"
+              title="Iniciar tarefa"
+            >
+              🔁
+            </button>
+
+            <button
+              *ngIf="Tarefa.status === 0 || Tarefa.status === 1"
+              class="icon-btn status status-next-cancelada"
+              (click)="atualizarStatus(Tarefa, 'cancelar')"
+              title="Cancelar tarefa"
+            >
+              ❌
+            </button>
+
+            <button
+              *ngIf="Tarefa.status === 1"
+              class="icon-btn status status-next-concluida"
+              (click)="atualizarStatus(Tarefa, 'concluir')"
+              title="Concluir tarefa"
+            >
+              ✅
+            </button>
+
+            <button
+              class="icon-btn edit"
+              (click)="editarTarefa(Tarefa.id)"
+              title="Editar"
+            >
+              ✏️
+            </button>
+
+            <button
+              class="icon-btn delete"
+              (click)="deletarTarefa(Tarefa.id)"
+              title="Excluir tarefa"
+            >
+              🗑️
+            </button>
+          </div>
+        </li>
+      </ul>
+
+      <div class="pagination-controls" *ngIf="totalPaginas > 1">
+        <button
+          class="pagination-btn"
+          [disabled]="paginaAtual === 1"
+          (click)="mudarPagina(1)"
+          title="Primeira página"
+        >
+          ⏮️
+        </button>
+
+        <button
+          class="pagination-btn"
+          [disabled]="paginaAtual === 1"
+          (click)="mudarPagina(paginaAtual - 1)"
+          title="Página anterior"
+        >
+          ◀️
+        </button>
+
+        <button
+          *ngFor="let pagina of paginasVisiveis"
+          class="pagination-btn page-number"
+          [class.active]="pagina === paginaAtual"
+          (click)="mudarPagina(pagina)"
+        >
+          {{ pagina }}
+        </button>
+
+        <button
+          class="pagination-btn"
+          [disabled]="paginaAtual === totalPaginas"
+          (click)="mudarPagina(paginaAtual + 1)"
+          title="Próxima página"
+        >
+          ▶️
+        </button>
+
+        <button
+          class="pagination-btn"
+          [disabled]="paginaAtual === totalPaginas"
+          (click)="mudarPagina(totalPaginas)"
+          title="Última página"
+        >
+          ⏭️
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

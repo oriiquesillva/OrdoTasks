@@ -1,0 +1,106 @@
+<div class="modal-container">
+  <div class="modal-box">
+    <div class="modal-title">
+      <h2>OrdoTasks</h2>
+      <h4>{{ form.get("id")?.value ? "Editar Tarefa" : "Criar Tarefa" }}</h4>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="salvar()" class="form" novalidate>
+      <div class="form-group">
+        <label for="titulo">Título</label>
+        <input
+          id="titulo"
+          type="text"
+          formControlName="titulo"
+          placeholder="Título da tarefa"
+        />
+        <small
+          class="error"
+          *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched"
+        >
+          O título é obrigatório e deve ter ao menos 3 caracteres.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="descricao">Descrição</label>
+        <textarea
+          id="descricao"
+          formControlName="descricao"
+          placeholder="Descrição da tarefa"
+        ></textarea>
+        <small
+          class="error"
+          *ngIf="
+            form.get('descricao')?.invalid && form.get('descricao')?.touched
+          "
+        >
+          A descrição é obrigatória e deve ter ao menos 5 caracteres.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" formControlName="status">
+          <option *ngFor="let s of statusOptions" [value]="s.value">
+            {{ s.label }}
+          </option>
+        </select>
+        <small class="hint" *ngIf="!form.get('id')?.value">
+          O status inicial é <strong>Pendente</strong> e não pode ser alterado
+          na criação.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="prioridade">Prioridade</label>
+        <select id="prioridade" formControlName="prioridade">
+          <option *ngFor="let p of priorityOptions" [value]="p.value">
+            {{ p.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="responsavel">Responsável</label>
+        <input
+          id="responsavel"
+          type="text"
+          formControlName="responsavelId"
+          placeholder="Responsável"
+        />
+        <small
+          class="error"
+          *ngIf="
+            form.get('responsavelId')?.invalid &&
+            form.get('responsavelId')?.touched
+          "
+        >
+          O responsável é obrigatório.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="prazo">Prazo</label>
+        <input id="prazo" type="date" formControlName="dataPrazo" />
+        <small
+          class="error"
+          *ngIf="
+            form.get('dataPrazo')?.invalid && form.get('dataPrazo')?.touched
+          "
+        >
+          O prazo é obrigatório.
+        </small>
+      </div>
+
+      <div class="modal-actions">
+        <button type="submit" class="btn salvar">
+          {{ form.get("id")?.value ? "Salvar alterações" : "Criar" }}
+        </button>
+        <button type="button" class="btn cancelar" (click)="fechar()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
