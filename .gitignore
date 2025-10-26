@@ -521,6 +521,7 @@ $RECYCLE.BIN/
 testem.log
 /typings
 __screenshots__/
+.vscode
 
 # System files
 .DS_Store
