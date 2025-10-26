@@ -522,6 +522,9 @@ testem.log
 /typings
 __screenshots__/
 .vscode
+.angular/
+dist/
+node_modules/
 
 # System files
 .DS_Store
