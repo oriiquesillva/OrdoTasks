@@ -15,6 +15,7 @@ namespace OrdoTasksDomain.Entities
         public StatusTarefa Status { get; set; }
         public Prioridade Prioridade { get; set; }
         public int ProjetoId { get; set; }
+        public string? ProjetoNome { get; set; }
         public string? ResponsavelId { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime? DataPrazo { get; set; }

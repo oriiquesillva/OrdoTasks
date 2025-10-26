@@ -21,6 +21,18 @@ builder.Services.AddSwaggerGen();
 // SIGNALR
 builder.Services.AddSignalR();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:4200") // sua aplicação Angular
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
 // INJEÇÃO DE DEPENDÊNCIA DO PROJETO
 builder.Services.AddScoped<IOrdoTasksProjectRepository, OrdoTasksProjectRepository>();
 builder.Services.AddScoped<GetAllProjectsUseCase>();
@@ -44,6 +56,8 @@ builder.Services.AddScoped<DashboardUseCase>();
 
 
 var app = builder.Build();
+
+app.UseCors("AllowAngularApp");
 
 // SWAGGER
 if (app.Environment.IsDevelopment())

@@ -26,34 +26,50 @@ namespace OrdoTasksInfrastructure.Repositories
             string? responsavel = null,
             DateTime? prazo = null)
         {
-            var sql = "SELECT * FROM Tarefas WHERE 1=1";
+            var sql = @"
+                SELECT 
+                    t.Id,
+                    t.Titulo,
+                    t.Descricao,
+                    t.Status,
+                    t.Prioridade,
+                    t.ProjetoId,
+                    p.Nome AS ProjetoNome,
+                    t.ResponsavelId,
+                    t.DataCriacao,
+                    t.DataPrazo,
+                    t.DataConclusao
+                FROM Tarefas t
+                LEFT JOIN Projetos p ON t.ProjetoId = p.Id
+                WHERE 1=1";
+
             var parametros = new DynamicParameters();
 
             if (projetoId.HasValue)
             {
-                sql += " AND ProjetoId = @ProjetoId";
+                sql += " AND t.ProjetoId = @ProjetoId";
                 parametros.Add("ProjetoId", projetoId);
             }
 
             if (status.HasValue)
             {
-                sql += " AND Status = @Status";
+                sql += " AND t.Status = @Status";
                 parametros.Add("Status", status);
             }
 
             if (!string.IsNullOrEmpty(responsavel))
             {
-                sql += " AND ResponsavelId LIKE @Responsavel";
+                sql += " AND t.ResponsavelId LIKE @Responsavel";
                 parametros.Add("Responsavel", $"%{responsavel}%");
             }
 
             if (prazo.HasValue)
             {
-                sql += " AND DataPrazo <= @Prazo";
+                sql += " AND t.DataPrazo <= @Prazo";
                 parametros.Add("Prazo", prazo);
             }
 
-            sql += " ORDER BY DataCriacao DESC";
+            sql += " ORDER BY t.DataCriacao DESC";
 
             await using var conn = new SqlConnection(_conn);
             return await conn.QueryAsync<Tarefa>(sql, parametros);
@@ -61,7 +77,23 @@ namespace OrdoTasksInfrastructure.Repositories
 
         public async Task<Tarefa?> GetByIdAsync(int id)
         {
-            const string sql = "SELECT * FROM Tarefas WHERE Id = @Id";
+            const string sql = @"
+                SELECT 
+                    t.Id,
+                    t.Titulo,
+                    t.Descricao,
+                    t.Status,
+                    t.Prioridade,
+                    t.ProjetoId,
+                    p.Nome AS ProjetoNome,
+                    t.ResponsavelId,
+                    t.DataCriacao,
+                    t.DataPrazo,
+                    t.DataConclusao
+                FROM Tarefas t
+                LEFT JOIN Projetos p ON t.ProjetoId = p.Id
+                WHERE t.Id = @Id";
+
             await using var conn = new SqlConnection(_conn);
             return await conn.QueryFirstOrDefaultAsync<Tarefa>(sql, new { Id = id });
         }
@@ -100,7 +132,6 @@ namespace OrdoTasksInfrastructure.Repositories
         {
             string sql = "UPDATE Tarefas SET Status = @Status";
 
-            // Define DataConclusao automaticamente quando concluída
             if (novoStatus == StatusTarefa.Concluida)
                 sql += ", DataConclusao = GETUTCDATE()";
 
@@ -120,10 +151,24 @@ namespace OrdoTasksInfrastructure.Repositories
         public async Task<IEnumerable<Tarefa>> GetAtrasadasAsync()
         {
             const string sql = @"
-                SELECT * FROM Tarefas 
-                WHERE DataPrazo < GETUTCDATE() 
-                AND Status <> @Concluida
-                AND Status <> @Cancelada";
+                SELECT 
+                    t.Id,
+                    t.Titulo,
+                    t.Descricao,
+                    t.Status,
+                    t.Prioridade,
+                    t.ProjetoId,
+                    p.Nome AS ProjetoNome,
+                    t.ResponsavelId,
+                    t.DataCriacao,
+                    t.DataPrazo,
+                    t.DataConclusao
+                FROM Tarefas t
+                LEFT JOIN Projetos p ON t.ProjetoId = p.Id
+                WHERE t.DataPrazo < GETUTCDATE() 
+                AND t.Status <> @Concluida
+                AND t.Status <> @Cancelada
+                ORDER BY t.DataPrazo ASC";
 
             await using var conn = new SqlConnection(_conn);
             return await conn.QueryAsync<Tarefa>(sql, new
