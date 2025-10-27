@@ -226,7 +226,7 @@
   transform: scale(1.08);
   background: #f7fafc;
   border: 2px solid #e2e8f0;
-  color: #3730a3; /* levemente mais escuro para dar feedback visual */
+  color: #3730a3; 
 }
 
 @media (max-width: 1024px) {
@@ -247,7 +247,6 @@
     gap: 16px;
   }
 
-  /* 🔹 Mantém o título alinhado à esquerda mesmo no modo responsivo */
   .card-title {
     text-align: left;
     align-items: flex-start;
