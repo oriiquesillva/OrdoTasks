@@ -20,18 +20,19 @@ namespace OrdoTasksApplication.UseCases.Project_UseCases
             _projetoRepository = projetoRepository;
         }
 
-        public async Task<CreateProjectResult> Run(Projeto projeto)
+        public async Task<CreateProjectResult> Run(CreateProjectDTO projetoDto)
         {
-
-            if (string.IsNullOrWhiteSpace(projeto.Nome))
-            {
+            if (string.IsNullOrWhiteSpace(projetoDto.Nome))
                 throw new InvalidProjectDataException();
-            }
 
-            projeto.DataCriacao = DateTime.UtcNow;
+            var projeto = new Projeto
+            {
+                Nome = projetoDto.Nome,
+                Descricao = projetoDto.Descricao,
+                DataCriacao = DateTime.UtcNow 
+            };
 
             var id = await _projetoRepository.CreateAsync(projeto);
-
             projeto.Id = id;
 
             return new CreateProjectResult
@@ -40,5 +41,6 @@ namespace OrdoTasksApplication.UseCases.Project_UseCases
                 Projeto = projeto
             };
         }
+
     }
 }

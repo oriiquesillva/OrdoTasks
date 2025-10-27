@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using OrdoTasks.Hubs;
+using OrdoTasksApplication.DTOs;
 using OrdoTasksApplication.Exceptions.Projects;
 using OrdoTasksApplication.Exceptions.Tasks;
 using OrdoTasksApplication.Interfaces;
@@ -78,7 +79,7 @@ namespace OrdoTasks.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask([FromBody] Tarefa tarefa)
+        public async Task<IActionResult> CreateTask([FromBody] CreateTaskDTO tarefa)
         {
             try
             {
@@ -99,7 +100,7 @@ namespace OrdoTasks.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTask(int id, [FromBody] Tarefa tarefa)
+        public async Task<IActionResult> UpdateTask(int id, [FromBody] UpdateTaskDTO tarefa)
         {
             try
             {
@@ -124,7 +125,7 @@ namespace OrdoTasks.Controllers
         {
             try
             {
-                await _updateTaskStatusUseCase.Run(id, novoStatus);
+                await _updateTaskStatusUseCase.Run(id, novoStatus); 
 
                 return NoContent();
             }

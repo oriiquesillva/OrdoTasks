@@ -1,4 +1,5 @@
-﻿using OrdoTasksDomain.Entities;
+﻿using OrdoTasksApplication.DTOs;
+using OrdoTasksDomain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

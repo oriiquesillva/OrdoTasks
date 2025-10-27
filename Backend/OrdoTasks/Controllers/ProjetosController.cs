@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.VisualBasic;
+using OrdoTasksApplication.DTOs;
 using OrdoTasksApplication.Exceptions.Projects;
 using OrdoTasksApplication.Exceptions.Tasks;
 using OrdoTasksApplication.Interfaces;
@@ -65,7 +66,7 @@ namespace OrdoTasks.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject([FromBody] Projeto projeto)
+        public async Task<IActionResult> CreateProject([FromBody] CreateProjectDTO projeto)
         {
             try
             {
@@ -83,7 +84,7 @@ namespace OrdoTasks.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProject(int id, [FromBody] Projeto projeto)
+        public async Task<IActionResult> UpdateProject(int id, [FromBody] UpdateProjectDTO projeto)
         {
             try
             {

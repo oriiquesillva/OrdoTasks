@@ -17,18 +17,27 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
             _projetoRepository = projetoRepository;
         }
 
-        public async Task<CreateTaskResult> Run(Tarefa tarefa)
+        public async Task<CreateTaskResult> Run(CreateTaskDTO tarefaDto)
         {
-            var projeto = await _projetoRepository.GetByIdAsync(tarefa.ProjetoId);
+            var projeto = await _projetoRepository.GetByIdAsync(tarefaDto.ProjetoId);
 
             if (projeto == null)
                 throw new ProjectNotFoundException();
 
-            tarefa.Status = StatusTarefa.Pendente;
-            tarefa.DataCriacao = DateTime.UtcNow;
+            var tarefa = new Tarefa
+            {
+                Titulo = tarefaDto.Titulo,
+                Descricao = tarefaDto.Descricao,
+                Prioridade = tarefaDto.Prioridade,
+                ProjetoId = tarefaDto.ProjetoId,
+                ResponsavelId = tarefaDto.ResponsavelId,
+                Status = StatusTarefa.Pendente,
+                DataPrazo = tarefaDto.DataPrazo,
+                DataCriacao = DateTime.UtcNow 
+            };
 
             var id = await _tarefaRepository.CreateAsync(tarefa);
-            tarefa.Id = id; 
+            tarefa.Id = id;
 
             return new CreateTaskResult
             {
@@ -36,5 +45,6 @@ namespace OrdoTasksApplication.UseCases.TasksUseCases
                 Tarefa = tarefa
             };
         }
+
     }
 }

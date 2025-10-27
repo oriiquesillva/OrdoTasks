@@ -1,4 +1,5 @@
-﻿using OrdoTasksApplication.Exceptions.Projects;
+﻿using OrdoTasksApplication.DTOs;
+using OrdoTasksApplication.Exceptions.Projects;
 using OrdoTasksApplication.Exceptions.Tasks;
 using OrdoTasksApplication.Interfaces;
 using OrdoTasksDomain.Entities;
@@ -19,16 +20,20 @@ namespace OrdoTasksApplication.UseCases.Project_UseCases
             _projetoRepository = projetoRepository;
         }
 
-        public async Task Run(int id, Projeto projeto)
+        public async Task Run(int id, UpdateProjectDTO projetoDTO)
         {
-            var verifaProjeto = await _projetoRepository.GetByIdAsync(id);
+            var verificaProjeto = await _projetoRepository.GetByIdAsync(id);
 
-            if (verifaProjeto == null)
-            {
+            if (verificaProjeto == null)
                 throw new ProjectNotFoundException();
-            }
 
-            projeto.Id = id;
+            var projeto = new Projeto
+            {
+                Id = id,
+                Nome = projetoDTO.Nome,
+                Descricao = projetoDTO.Descricao,
+                DataCriacao = verificaProjeto.DataCriacao
+            };
 
             await _projetoRepository.UpdateAsync(projeto);
         }
