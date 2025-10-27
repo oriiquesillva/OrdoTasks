@@ -236,7 +236,7 @@ docker-compose restart frontend
 # Atualizar apenas o frontend
 ```bash
 docker-compose build frontend
-docker-compose up -d frontend
+docker-compose up  frontend
 ```
 
 ---
