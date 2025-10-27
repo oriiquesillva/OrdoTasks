@@ -207,18 +207,26 @@
 
 .icon-btn.back {
   background: transparent;
-  font-size: 1.5rem;
   border: none;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #4a5568;
   cursor: pointer;
-  margin-bottom: 15px;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .icon-btn.back:hover {
+  transform: scale(1.08);
   background: #f7fafc;
-  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  color: #3730a3; /* levemente mais escuro para dar feedback visual */
 }
 
 @media (max-width: 1024px) {
@@ -239,8 +247,11 @@
     gap: 16px;
   }
 
+  /* 🔹 Mantém o título alinhado à esquerda mesmo no modo responsivo */
   .card-title {
-    text-align: center;
+    text-align: left;
+    align-items: flex-start;
+    width: 100%;
   }
 
   .btn-create {

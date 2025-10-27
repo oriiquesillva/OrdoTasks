@@ -24,3 +24,47 @@
   font-weight: 500;
   padding: 12px 18px !important;
 }
+
+.cdk-overlay-container {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cdk-overlay-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+.overlay-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.cdk-overlay-pane {
+  pointer-events: auto;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+}
+
+.overlay-panel-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .cdk-overlay-pane {
+    width: 100% !important;
+    max-width: 100vw !important;
+    padding: 5px !important;
+  }
+}

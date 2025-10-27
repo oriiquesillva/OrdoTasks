@@ -1,14 +1,25 @@
+/* O :host representa o componente do modal dentro do CDK Overlay */
+:host {
+  display: block;
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
 .modal-container {
+  position: relative;
   background: #fff;
   border-radius: 16px;
   padding: 25px 30px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-  width: 650px;
-  max-width: 90vw;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   animation: fadeIn 0.25s ease;
   box-sizing: border-box;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-box {
@@ -34,7 +45,15 @@
 
 .modal-title h2 {
   font-size: 1.6rem;
-  text-align: left; 
+  text-align: left;
+  margin: 0;
+}
+
+.modal-title h4 {
+  font-size: 1rem;
+  color: #666;
+  margin: 4px 0 0 0;
+  font-weight: 500;
 }
 
 .form {
@@ -52,33 +71,46 @@
 .form-group label {
   font-weight: 500;
   color: #444;
+  font-size: 0.95rem;
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
   border: 1px solid #d3d6da;
   border-radius: 10px;
   padding: 12px 14px;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s ease;
   width: 100%;
   box-sizing: border-box;
+  background: #fff;
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
-  border-color: #007bff;
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
 
 .form-group textarea {
   resize: none;
   height: 100px;
+  font-family: inherit;
 }
 
 .error {
   font-size: 0.85rem;
   color: #d93025;
+  margin-top: 4px;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
 }
 
 .modal-actions {
@@ -86,6 +118,7 @@
   justify-content: flex-end;
   gap: 12px;
   flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .modal-actions .btn {
@@ -97,107 +130,31 @@
   font-size: 1rem;
   transition: all 0.3s ease;
   width: auto;
+  white-space: nowrap;
 }
 
-.modal-actions .btn-create {
+.btn-create {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.modal-actions .btn-create:hover {
+.btn-create:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
 }
 
-.modal-actions .btn-cancelar {
-  background: linear-gradient(135deg, #b93434 0%, #d64545 100%);
+.btn-cancelar {
+  background: linear-gradient(135deg, #ff6b6b 0%, #d64545 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(214, 69, 69, 0.3);
 }
 
-.modal-actions .btn-cancelar:hover {
+.btn-cancelar:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(214, 69, 69, 0.5);
   background: linear-gradient(135deg, #e63946 0%, #c53030 100%);
-}
-
-/* 🔹 Responsividade aprimorada */
-@media (max-width: 1024px) {
-  .modal-container {
-    width: 80vw;
-  }
-}
-
-@media (max-width: 768px) {
-  .modal-container {
-    width: 90vw;
-    padding: 25px;
-  }
-
-  .modal-box {
-    padding: 22px;
-  }
-
-  .modal-title {
-    align-items: flex-start;
-  }
-
-  .modal-title h2 {
-    font-size: 1.5rem;
-    text-align: left;
-  }
-
-  .modal-actions {
-    justify-content: center;
-    gap: 14px;
-  }
-
-  .modal-actions .btn {
-    width: 45%;
-  }
-}
-
-@media (max-width: 480px) {
-  .modal-container {
-    width: 95vw;
-    padding: 20px;
-  }
-
-  .modal-box {
-    padding: 20px;
-  }
-
-  .modal-title {
-    align-items: flex-start; 
-  }
-
-  .modal-title h2 {
-    font-size: 1.4rem;
-    text-align: left;
-  }
-
-  .form {
-    gap: 18px;
-  }
-
-  .form-group input,
-  .form-group textarea {
-    font-size: 1rem;
-    padding: 12px;
-  }
-
-  .modal-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .modal-actions .btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 1rem;
-  }
 }
 
 @keyframes fadeIn {
@@ -208,5 +165,129 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ========================================
+   RESPONSIVIDADE
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .modal-container {
+    padding: 24px 28px;
+  }
+
+  .modal-box {
+    padding: 24px 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  :host {
+    max-width: 95%;
+  }
+
+  .modal-container {
+    padding: 22px 25px;
+  }
+
+  .modal-box {
+    padding: 22px;
+  }
+
+  .modal-title h2 {
+    font-size: 1.5rem;
+  }
+
+  .modal-actions {
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .modal-actions .btn {
+    flex: 1 1 45%;
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  :host {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .modal-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px 20px;
+    border-radius: 12px;
+    max-height: 95vh;
+  }
+
+  .modal-box {
+    padding: 18px 20px;
+    border-radius: 16px;
+  }
+
+  .modal-title {
+    margin-bottom: 16px;
+  }
+
+  .modal-title h2 {
+    font-size: 1.4rem;
+  }
+
+  .modal-title h4 {
+    font-size: 0.95rem;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    font-size: 1rem;
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+
+  .form-group textarea {
+    height: 90px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 360px) {
+  .modal-container {
+    padding: 16px;
+  }
+
+  .modal-box {
+    padding: 16px;
+  }
+
+  .modal-title h2 {
+    font-size: 1.3rem;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 11px 12px;
   }
 }

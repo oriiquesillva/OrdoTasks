@@ -160,7 +160,7 @@ docker-compose down -v
 ```bash
 docker-compose down -v
 docker-compose build --no-cache
-docker-compose up -d
+docker-compose up 
 ```
 
 ---

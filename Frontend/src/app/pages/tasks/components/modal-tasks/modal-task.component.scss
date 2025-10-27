@@ -1,17 +1,25 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
 .modal-container {
+  position: relative;
   background: #fff;
   border-radius: 16px;
   padding: 20px 25px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   width: 650px;
-  max-width: 95%;
+  max-width: 95vw;
   display: flex;
   flex-direction: column;
   animation: fadeIn 0.25s ease;
   box-sizing: border-box;
-  margin: 0 auto;
   max-height: 90vh;
   overflow-y: auto;
+  z-index: 1001;
 }
 
 .modal-box {
@@ -157,7 +165,6 @@
   }
 }
 
-
 @media (max-width: 1366px) {
   .modal-container {
     padding: 22px;
@@ -180,7 +187,7 @@
 
 @media (max-width: 1024px) {
   .modal-container {
-    width: 85%;
+    width: 90%;
     padding: 20px;
     border-radius: 14px;
     max-height: 80vh;
@@ -202,15 +209,16 @@
 
 @media (max-width: 768px) {
   .modal-container {
-    width: 100%;
-    padding: 15px;
+    width: 96%;
+    max-width: 96%;
+    padding: 18px;
     border-radius: 12px;
-    max-height: 80vh;
+    max-height: 85vh;
     overflow-y: auto;
   }
 
   .modal-box {
-    padding: 15px;
+    padding: 16px;
   }
 
   .modal-actions {
@@ -225,27 +233,81 @@
 }
 
 @media (max-width: 480px) {
+  :host {
+    padding: 5px !important;
+  }
+
   .modal-container {
-    width: 95%;
-    padding: 12px;
-    border-radius: 10px;
-    margin: 0 auto;
-    max-height: 85vh;
+    width: 100%;
+    max-width: 100%;
+    padding: 18px;
+    border-radius: 12px;
+    max-height: 95vh;
     overflow-y: auto;
   }
 
   .modal-box {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .modal-title {
+    margin-bottom: 16px;
+  }
+
+  .modal-title h2 {
+    font-size: 1.4rem;
+  }
+
+  .modal-title h4 {
+    font-size: 0.95rem;
+  }
+
+  .form {
+    gap: 14px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
     padding: 12px;
+    font-size: 1rem;
+    border-radius: 8px;
   }
 
   .modal-actions {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    margin-top: 8px;
   }
 
   .modal-actions .btn {
     width: 100%;
-    font-size: 0.95rem;
-    padding: 10px;
+    font-size: 1rem;
+    padding: 14px;
+    min-width: unset;
+  }
+
+  .btn-create,
+  .btn-cancelar {
+    padding: 14px 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .modal-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+    margin: 0;
+    border-radius: 10px;
+  }
+  
+  .modal-box {
+    padding: 14px;
+  }
+  
+  .modal-title h2 {
+    font-size: 1.3rem;
   }
 }
