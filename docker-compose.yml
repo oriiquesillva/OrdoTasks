@@ -1,0 +1,54 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Backend/Dockerfile
+    container_name: ordotasks-backend
+    ports:
+      - "${BACKEND_PORT}:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ConnectionStrings__DefaultConnection=Server=${DB_CONTAINER_NAME},${DB_PORT};Database=${DB_NAME};User Id=${DB_USER};Password=${DB_PASSWORD};TrustServerCertificate=True;
+    depends_on:
+      - database
+    networks:
+      - ordonet
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Frontend/Dockerfile
+    container_name: ordotasks-frontend
+    ports:
+      - "${FRONTEND_PORT}:80"
+    depends_on:
+      - backend
+    networks:
+      - ordonet
+
+  database:
+    image: ${DB_IMAGE}
+    container_name: ${DB_CONTAINER_NAME}
+    environment:
+      SA_PASSWORD: ${DB_PASSWORD}
+      ACCEPT_EULA: "Y"
+    ports:
+      - "${DB_PORT}:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./sql:/scripts
+    command: >
+      /bin/bash -c "
+      /opt/mssql/bin/sqlservr &
+      sleep 20 &&
+      /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD} -C -i /scripts/init.sql;
+      wait"
+    networks:
+      - ordonet
+
+networks:
+  ordonet:
+    driver: bridge
+
+volumes:
+  sql_data:

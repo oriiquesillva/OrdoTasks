@@ -1,7 +1,7 @@
 <div class="modal-container">
   <div class="modal-box">
     <div class="modal-title">
-      <h2>OrdoTaks</h2>
+      <h2>OrdoTasks</h2>
       <h4>{{ dadoProjeto?.id ? "Editar" : "Criar" }} Projeto</h4>
     </div>
 
@@ -19,7 +19,7 @@
           class="error"
           *ngIf="form.get('nome')?.touched && form.get('nome')?.invalid"
         >
-          O nome é obrigatório e deve ter pelo menos 3 caracteres.
+          Por favor informe o nome do projeto.
         </small>
       </div>
 
@@ -37,13 +37,13 @@
             form.get('descricao')?.touched && form.get('descricao')?.invalid
           "
         >
-          A descrição é obrigatória e deve ter pelo menos 5 caracteres.
+          Por favor informe a descrição do projeto
         </small>
       </div>
 
       <div class="modal-actions">
-        <button type="submit" class="btn salvar">Salvar</button>
-        <button type="button" class="btn cancelar" (click)="fechar()">
+        <button type="submit" class="btn btn-create salvar">Salvar</button>
+        <button type="button" class="btn btn-cancelar cancelar" (click)="fechar()">
           Cancelar
         </button>
       </div>

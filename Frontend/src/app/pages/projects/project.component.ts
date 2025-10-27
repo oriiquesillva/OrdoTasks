@@ -7,6 +7,7 @@ import { ModalCriarProjetoComponent } from './components/modal-project/modal-pro
 import { CommonModule } from '@angular/common';
 import { ModalService } from '@shared/service/modal/modal.service';
 import { TasksDTO, TasksStatus } from '@shared/service/api/DTOs/TasksDTO';
+import Swal from 'sweetalert2';
 
 interface ProjectWithProgress extends ProjectDTO {
   progressoPercentual?: number;
@@ -14,6 +15,7 @@ interface ProjectWithProgress extends ProjectDTO {
 
 @Component({
   selector: 'app-projects',
+  standalone: true,
   imports: [RouterLink, CommonModule],
   providers: [ModalService, ApiService],
   templateUrl: './project.component.html',
@@ -40,6 +42,7 @@ export class ProjectComponent implements OnInit {
     componentRef.instance.atualizaProjetos.subscribe((deveAtualizar) => {
       if (deveAtualizar) {
         this.recarregarProjetos();
+        this.showToast('success', 'Projeto salvo com sucesso!');
       }
     });
   }
@@ -49,37 +52,58 @@ export class ProjectComponent implements OnInit {
   }
 
   async deletarProjeto(id: string) {
+    const confirmacao = await Swal.fire({
+      title: 'Excluir projeto?',
+      text: 'Esta ação não poderá ser desfeita!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#e63946',
+      cancelButtonColor: '#6c757d',
+      reverseButtons: true,
+    });
+
+    if (!confirmacao.isConfirmed) return;
+
     try {
       await firstValueFrom(this.apiService.deleteProject(id));
+      this.showToast('success', 'Projeto excluído com sucesso!');
       this.recarregarProjetos();
     } catch (error: any) {
-      if (error?.status === 400) {
-        window.alert(error.error.message);
-      }
+      const msg =
+        error?.error?.message || 'Ocorreu um erro ao excluir o projeto.';
+      this.showToast('error', msg);
+      console.error(error);
     }
   }
 
   private async recarregarProjetos() {
-    const dadosProjeto = await firstValueFrom(this.apiService.getProjects());
+    try {
+      const dadosProjeto = await firstValueFrom(this.apiService.getProjects());
 
-    const projetosComProgresso = await Promise.all(
-      dadosProjeto.map(async (projeto) => {
-        const progresso = await this.calcularProgresso(projeto.id.toString());
-        console.log(progresso, projeto);
-        return {
-          ...projeto,
-          progressoPercentual: progresso,
-        };
-      })
-    );
+      const projetosComProgresso = await Promise.all(
+        dadosProjeto.map(async (projeto) => {
+          const progresso = await this.calcularProgresso(
+            projeto.id.toString()
+          );
+          return {
+            ...projeto,
+            progressoPercentual: progresso,
+          };
+        })
+      );
 
-    this.dadosProjeto$.next(projetosComProgresso);
+      this.dadosProjeto$.next(projetosComProgresso);
+    } catch (error) {
+      this.showToast('error', 'Erro ao carregar os projetos.');
+      console.error(error);
+    }
   }
 
   private async calcularProgresso(projetoId: string): Promise<number> {
     try {
       const tasks = await firstValueFrom(this.apiService.getTasks(projetoId));
-      console.log(tasks);
 
       if (!tasks || tasks.length === 0) {
         return 0;
@@ -88,7 +112,6 @@ export class ProjectComponent implements OnInit {
       const tarefasConcluidas = tasks.filter(
         (task: TasksDTO) => task.status === TasksStatus.Concluida
       ).length;
-      console.log(tarefasConcluidas);
       return Math.round((tarefasConcluidas / tasks.length) * 100);
     } catch (error) {
       console.error('Erro ao calcular progresso:', error);
@@ -99,5 +122,21 @@ export class ProjectComponent implements OnInit {
   getProgressOffset(percentage: number): number {
     const circumference = 283;
     return circumference - (percentage / 100) * circumference;
+  }
+
+  private showToast(
+    icon: 'success' | 'error' | 'info' | 'warning',
+    title: string
+  ) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon,
+      title,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      background: '#fff',
+    });
   }
 }

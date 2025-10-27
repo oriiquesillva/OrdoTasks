@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DashboardMetrics } from './DTOs/DashboardMetrics';
+import { environment } from '../../../../environments/environment';
 import {
   ProjectDTO,
   RequestProjectDTO,
@@ -19,7 +20,7 @@ import {
 export class ApiService {
   private httpCliente = inject(HttpClient);
 
-  private readonly baseUrl = 'http://localhost:5257';
+  private readonly baseUrl = environment.apiUrl;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -77,7 +78,7 @@ export class ApiService {
     );
   }
 
-  createTask(payload: TaskRequestDTO) {
+  createTask(payload: TaskRequestDTO): Observable<void> {
     return this.httpCliente.post<void>(
       `${this.baseUrl}/api/Tarefas`,
       payload,
@@ -92,7 +93,7 @@ export class ApiService {
     );
   }
 
-  updateTask(payload: RequestUpdateTaskDTO) {
+  updateTask(payload: RequestUpdateTaskDTO): Observable<void> {
     return this.httpCliente.put<void>(
       `${this.baseUrl}/api/Tarefas/${payload.id}`,
       payload,
@@ -108,7 +109,7 @@ export class ApiService {
     );
   }
 
-  deleteTask(id: number) {
+  deleteTask(id: number): Observable<void> {
     return this.httpCliente.delete<void>(
       `${this.baseUrl}/api/Tarefas/${id}`,
       this.httpOptions

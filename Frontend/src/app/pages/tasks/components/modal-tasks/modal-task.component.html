@@ -18,7 +18,7 @@
           class="error"
           *ngIf="form.get('titulo')?.invalid && form.get('titulo')?.touched"
         >
-          O título é obrigatório e deve ter ao menos 3 caracteres.
+          Por favor informe o título da tarefa
         </small>
       </div>
 
@@ -35,7 +35,7 @@
             form.get('descricao')?.invalid && form.get('descricao')?.touched
           "
         >
-          A descrição é obrigatória e deve ter ao menos 5 caracteres.
+          Por favor informe a descrição do projeto.
         </small>
       </div>
 
@@ -47,8 +47,7 @@
           </option>
         </select>
         <small class="hint" *ngIf="!form.get('id')?.value">
-          O status inicial é <strong>Pendente</strong> e não pode ser alterado
-          na criação.
+          O status inicial é <strong>Pendente</strong>.
         </small>
       </div>
 
@@ -76,7 +75,7 @@
             form.get('responsavelId')?.touched
           "
         >
-          O responsável é obrigatório.
+          Por favor informe o responsável.
         </small>
       </div>
 
@@ -89,15 +88,15 @@
             form.get('dataPrazo')?.invalid && form.get('dataPrazo')?.touched
           "
         >
-          O prazo é obrigatório.
+          Por favor informe o prazo.
         </small>
       </div>
 
       <div class="modal-actions">
-        <button type="submit" class="btn salvar">
+        <button type="submit" class="btn btn-create salvar">
           {{ form.get("id")?.value ? "Salvar alterações" : "Criar" }}
         </button>
-        <button type="button" class="btn cancelar" (click)="fechar()">
+        <button type="button" class="btn btn-cancelar cancelar" (click)="fechar()">
           Cancelar
         </button>
       </div>

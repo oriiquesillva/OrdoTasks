@@ -1,12 +1,14 @@
 .modal-container {
   background: #fff;
   border-radius: 16px;
-  padding: 15px 20px;
+  padding: 25px 30px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   width: 650px;
+  max-width: 90vw;
   display: flex;
   flex-direction: column;
   animation: fadeIn 0.25s ease;
+  box-sizing: border-box;
 }
 
 .modal-box {
@@ -14,22 +16,25 @@
   border: 2px solid #d3d6da;
   border-radius: 20px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-  width: 400x; /* 🔹 aumentamos o tamanho */
-  padding: 10px 20px;
+  padding: 25px 30px;
   text-align: left;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .modal-title {
   display: flex;
   justify-content: start;
   flex-direction: column;
+  align-items: flex-start; 
   font-weight: bold;
   color: #333;
   margin-bottom: 20px;
+}
 
-  .h2 {
-    font-size: 1.6rem;
-  }
+.modal-title h2 {
+  font-size: 1.6rem;
+  text-align: left; 
 }
 
 .form {
@@ -42,30 +47,33 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
 
-  label {
-    font-weight: 500;
-    color: #444;
-  }
+.form-group label {
+  font-weight: 500;
+  color: #444;
+}
 
-  input,
-  textarea {
-    border: 1px solid #d3d6da;
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.2s;
+.form-group input,
+.form-group textarea {
+  border: 1px solid #d3d6da;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-    &:focus {
-      border-color: #007bff;
-    }
-  }
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #007bff;
+}
 
-  textarea {
-    resize: none;
-    height: 90px;
-  }
+.form-group textarea {
+  resize: none;
+  height: 100px;
 }
 
 .error {
@@ -77,32 +85,118 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  flex-wrap: wrap;
+}
 
-  .btn {
-    border: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
+.modal-actions .btn {
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: auto;
+}
+
+.modal-actions .btn-create {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.modal-actions .btn-create:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.modal-actions .btn-cancelar {
+  background: linear-gradient(135deg, #b93434 0%, #d64545 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(214, 69, 69, 0.3);
+}
+
+.modal-actions .btn-cancelar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(214, 69, 69, 0.5);
+  background: linear-gradient(135deg, #e63946 0%, #c53030 100%);
+}
+
+/* 🔹 Responsividade aprimorada */
+@media (max-width: 1024px) {
+  .modal-container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-container {
+    width: 90vw;
+    padding: 25px;
   }
 
-  .salvar {
-    background-color: #007bff;
-    color: white;
-
-    &:hover {
-      background-color: #0056b3;
-    }
+  .modal-box {
+    padding: 22px;
   }
 
-  .cancelar {
-    background-color: #e0e0e0;
-    color: #333;
+  .modal-title {
+    align-items: flex-start;
+  }
 
-    &:hover {
-      background-color: #c5c5c5;
-    }
+  .modal-title h2 {
+    font-size: 1.5rem;
+    text-align: left;
+  }
+
+  .modal-actions {
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .modal-actions .btn {
+    width: 45%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-container {
+    width: 95vw;
+    padding: 20px;
+  }
+
+  .modal-box {
+    padding: 20px;
+  }
+
+  .modal-title {
+    align-items: flex-start; 
+  }
+
+  .modal-title h2 {
+    font-size: 1.4rem;
+    text-align: left;
+  }
+
+  .form {
+    gap: 18px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
   }
 }
 

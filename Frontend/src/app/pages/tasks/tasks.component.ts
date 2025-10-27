@@ -13,6 +13,7 @@ import {
 import { TasksDTO } from '@shared/service/api/DTOs/TasksDTO';
 import { ModalService } from '@shared/service/modal/modal.service';
 import { ToastService } from '@shared/service/utils/toast.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tasks',
@@ -91,7 +92,7 @@ export class TasksComponent implements OnInit {
     } catch (error) {
       console.error('Erro ao buscar projeto:', error);
       this.nomeProjeto = 'Projeto';
-      this.toast.error('Erro ao carregar informações do projeto');
+      this.showToast('error', 'Erro ao carregar informações do projeto');
     }
   }
 
@@ -223,13 +224,27 @@ export class TasksComponent implements OnInit {
   }
 
   async deletarTarefa(id: number) {
+    const confirmacao = await Swal.fire({
+      title: 'Excluir tarefa?',
+      text: 'Esta ação não poderá ser desfeita!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#e63946',
+      cancelButtonColor: '#6c757d',
+      reverseButtons: true,
+    });
+
+    if (!confirmacao.isConfirmed) return;
+
     try {
       await firstValueFrom(this.apiService.deleteTask(id));
-      this.toast.success('Tarefa excluída com sucesso!');
+      this.showToast('success', 'Tarefa excluída com sucesso!');
       this.buscarTarefas(this.projetoId);
     } catch (err: any) {
       const msg = err?.error?.message ?? 'Erro ao excluir a tarefa.';
-      this.toast.error(msg);
+      this.showToast('error', msg);
       console.error(err);
     }
   }
@@ -241,6 +256,22 @@ export class TasksComponent implements OnInit {
     let novoStatus = tarefa.status;
     let mensagem = '';
     let tipo: 'success' | 'info' | 'error' = 'info';
+
+    if (acao === 'cancelar') {
+      const confirmacao = await Swal.fire({
+        title: 'Cancelar tarefa?',
+        text: 'Tem certeza que deseja cancelar esta tarefa?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim, cancelar',
+        cancelButtonText: 'Voltar',
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true,
+      });
+
+      if (!confirmacao.isConfirmed) return;
+    }
 
     switch (acao) {
       case 'iniciar':
@@ -271,14 +302,28 @@ export class TasksComponent implements OnInit {
       );
       await this.buscarTarefas(this.projetoId);
 
-      if (tipo === 'success') this.toast.success(mensagem);
-      else if (tipo === 'error') this.toast.error(mensagem);
-      else this.toast.info(mensagem);
+      this.showToast(tipo, mensagem);
     } catch (error: any) {
       const mensagemErro =
         error?.error?.message ?? 'Erro ao atualizar o status da tarefa.';
-      this.toast.error(mensagemErro);
+      this.showToast('error', mensagemErro);
       console.error(error);
     }
+  }
+
+  private showToast(
+    icon: 'success' | 'error' | 'info' | 'warning',
+    title: string
+  ) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon,
+      title,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      background: '#fff',
+    });
   }
 }
